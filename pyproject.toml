@@ -1,0 +1,19 @@
+[project]
+name = "e2e-cinebot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datasets>=4.4.1",
+    "google-adk>=1.4.1",
+    "langchain>=1.0.8",
+    "langchain-community>=0.4.1",
+    "langchain-google-genai>=2.1.10",
+    "langchain-openai>=0.3.35",
+    "litellm>=1.76.0",
+    "lmstudio>=1.5.0",
+    "openai-agents>=0.2.9",
+    "rank-bm25>=0.2.2",
+    "rich>=14.1.0",
+]
