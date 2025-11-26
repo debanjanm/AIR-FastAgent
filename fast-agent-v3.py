@@ -24,7 +24,7 @@ os.environ["OPENAI_API_BASE"] = "http://localhost:1234/v1/"
 os.environ["OPENAI_API_KEY"] = "test"
 os.environ["LANGFUSE_SECRET_KEY"] = "sk-lf-1f5e56bd-1330-4c25-942e-42125866aaa0"
 os.environ["LANGFUSE_PUBLIC_KEY"] = "pk-lf-286bb2d6-b4a2-42ea-8623-5220a7178ea6"
-os.environ["LANGFUSE_HOST"] = "https://cloud.langfuse.com"
+os.environ["LANGFUSE_BASE_URL"] = "https://cloud.langfuse.com"
 
 
 # Initialize Langfuse CallbackHandler
@@ -38,11 +38,7 @@ from langfuse.langchain import CallbackHandler
 langfuse = get_client()
  
 # Initialize Langfuse CallbackHandler for Langchain (tracing)
-try:
-    langfuse_handler = CallbackHandler(stateful_client=langfuse)
-except TypeError:
-    print("CallbackHandler does not accept stateful_client, using default init")
-    langfuse_handler = CallbackHandler()
+langfuse_handler = CallbackHandler()
 
 ##------------------------------------------------------------------------------##
 
@@ -129,7 +125,3 @@ print(f"AI: {response1['messages'][-1].content}")
 # print(f"AI: {response2['messages'][-1].content}")
 
 ##------------------------------------------------------------------------------##
-
-# Ensure all traces are sent before exiting
-# Ensure all traces are sent before exiting
-langfuse.flush()
