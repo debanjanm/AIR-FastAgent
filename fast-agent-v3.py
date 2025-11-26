@@ -14,18 +14,15 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 # from langfuse.callback import CallbackHandler
 
 ##------------------------------------------------------------------------------##
-# export LANGFUSE_SECRET_KEY="sk-lf-1f5e56bd-1330-4c25-942e-42125866aaa0"
-# export LANGFUSE_PUBLIC_KEY="pk-lf-286bb2d6-b4a2-42ea-8623-5220a7178ea6"
-# export LANGFUSE_BASE_URL="https://cloud.langfuse.com"
+import dotenv
+dotenv.load_dotenv()
 
-##------------------------------------------------------------------------------##
 ## Set up environment variables for LM Studio
-os.environ["OPENAI_API_BASE"] = "http://localhost:1234/v1/"
-os.environ["OPENAI_API_KEY"] = "test"
-os.environ["LANGFUSE_SECRET_KEY"] = "sk-lf-1f5e56bd-1330-4c25-942e-42125866aaa0"
-os.environ["LANGFUSE_PUBLIC_KEY"] = "pk-lf-286bb2d6-b4a2-42ea-8623-5220a7178ea6"
-os.environ["LANGFUSE_BASE_URL"] = "https://cloud.langfuse.com"
-
+os.environ["OPENAI_API_BASE"] = os.getenv("OPENAI_API_BASE")
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["LANGFUSE_SECRET_KEY"] = os.getenv("LANGFUSE_SECRET_KEY")
+os.environ["LANGFUSE_PUBLIC_KEY"] = os.getenv("LANGFUSE_PUBLIC_KEY")
+os.environ["LANGFUSE_BASE_URL"] = os.getenv("LANGFUSE_BASE_URL")
 
 # Initialize Langfuse CallbackHandler
 # Ensure that LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, and LANGFUSE_HOST are set in your environment.
