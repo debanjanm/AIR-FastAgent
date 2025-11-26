@@ -11,12 +11,42 @@ from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.checkpoint.sqlite import SqliteSaver
+# from langfuse.callback import CallbackHandler
+
+##------------------------------------------------------------------------------##
+# export LANGFUSE_SECRET_KEY="sk-lf-1f5e56bd-1330-4c25-942e-42125866aaa0"
+# export LANGFUSE_PUBLIC_KEY="pk-lf-286bb2d6-b4a2-42ea-8623-5220a7178ea6"
+# export LANGFUSE_BASE_URL="https://cloud.langfuse.com"
 
 ##------------------------------------------------------------------------------##
 ## Set up environment variables for LM Studio
 os.environ["OPENAI_API_BASE"] = "http://localhost:1234/v1/"
 os.environ["OPENAI_API_KEY"] = "test"
+os.environ["LANGFUSE_SECRET_KEY"] = "sk-lf-1f5e56bd-1330-4c25-942e-42125866aaa0"
+os.environ["LANGFUSE_PUBLIC_KEY"] = "pk-lf-286bb2d6-b4a2-42ea-8623-5220a7178ea6"
+os.environ["LANGFUSE_HOST"] = "https://cloud.langfuse.com"
 
+
+# Initialize Langfuse CallbackHandler
+# Ensure that LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, and LANGFUSE_HOST are set in your environment.
+# langfuse_handler = CallbackHandler()
+
+from langfuse import get_client
+from langfuse.langchain import CallbackHandler
+ 
+# Initialize Langfuse client
+langfuse = get_client()
+ 
+# Initialize Langfuse CallbackHandler for Langchain (tracing)
+try:
+    langfuse_handler = CallbackHandler(stateful_client=langfuse)
+except TypeError:
+    print("CallbackHandler does not accept stateful_client, using default init")
+    langfuse_handler = CallbackHandler()
+
+##------------------------------------------------------------------------------##
+
+##------------------------------------------------------------------------------##
 llm = ChatOpenAI(model="qwen/qwen3-4b-2507", temperature=0)
 
 
@@ -68,19 +98,19 @@ agent = create_agent(
 
 ##------------------------------------------------------------------------------##
 # Session A: define a unique thread_id
-config = {"configurable": {"thread_id": "session_A"}}
+config = {"configurable": {"thread_id": "session_B"}, "callbacks": [langfuse_handler]}
 
 
-# print("--- Interaction 1 (Storing) ---")
-# response1 = agent.invoke(
-#     {
-#         "messages": [
-#             {"role": "user", "content": "Explain PopularityAdjusted Block Model (PABM)"}
-#         ]
-#     },
-#     config=config,
-# )
-# print(f"AI: {response1['messages'][-1].content}")
+print("--- Interaction 1 (Storing) ---")
+response1 = agent.invoke(
+    {
+        "messages": [
+            {"role": "user", "content": "Explain PopularityAdjusted Block Model (PABM)"}
+        ]
+    },
+    config=config,
+)
+print(f"AI: {response1['messages'][-1].content}")
 
 # print("\n--- Interaction 2 (Retrieving) ---")
 # # The agent automatically queries SQLite using 'session_A' to remember the name
@@ -92,10 +122,14 @@ config = {"configurable": {"thread_id": "session_A"}}
 
 
 
-response2 = agent.invoke(
-    {"messages": [{"role": "user", "content": "Who are you?"}]},
-    config=config,
-)
-print(f"AI: {response2['messages'][-1].content}")
+# response2 = agent.invoke(
+#     {"messages": [{"role": "user", "content": "Who are you?"}]},
+#     config=config,
+# )
+# print(f"AI: {response2['messages'][-1].content}")
 
 ##------------------------------------------------------------------------------##
+
+# Ensure all traces are sent before exiting
+# Ensure all traces are sent before exiting
+langfuse.flush()
