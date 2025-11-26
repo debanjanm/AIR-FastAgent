@@ -1,11 +1,14 @@
-import os 
+import os
+
 from litellm import completion
 
-os.environ['LM_STUDIO_API_BASE'] = "http://localhost:1234/v1"
-os.environ['LM_STUDIO_API_KEY']  = "lm-studio"
+os.environ["LM_STUDIO_API_BASE"] = "http://localhost:1234/v1"
+os.environ["LM_STUDIO_API_KEY"] = "lm-studio"
 
 import base64
+import io
 
+from pdf2image import convert_from_path
 
 # with open("test.jpg", "rb") as f:
 #     data = f.read()
@@ -20,9 +23,6 @@ import base64
 
 # base64_string = pdf_to_base64("test.pdf")
 
-import base64
-from pdf2image import convert_from_path
-import io
 
 def pdf_to_base64_images(pdf_path, dpi=200, fmt="PNG"):
     """
@@ -132,7 +132,7 @@ response = completion(
                 *[
                     {"type": "image_url", "image_url": {"url": img}}
                     for img in base64_images
-                ]
+                ],
             ],
         }
     ],

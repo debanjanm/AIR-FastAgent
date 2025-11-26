@@ -1,10 +1,11 @@
 import os
+
 os.environ["OPENAI_API_BASE"] = "http://localhost:1234/v1/"
 os.environ["OPENAI_API_KEY"] = "test"
 
 
-from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
+from langchain_openai import OpenAIEmbeddings
 
 embeddings = OpenAIEmbeddings(
     model="text-embedding-qwen3-embedding-4b",
@@ -12,7 +13,7 @@ embeddings = OpenAIEmbeddings(
     # of models, you can specify the size
     # of the embeddings you want returned.
     # dimensions=1024
-    check_embedding_ctx_length=False
+    check_embedding_ctx_length=False,
 )
 
 # text = "LangChain is a framework for developing applications powered by language models."

@@ -11,14 +11,14 @@ path = input("test.jpg")
 # img = Path(path).read_bytes()
 
 response = chat(
-  model='qwen2.5vl',
-  messages=[
-    {
-      'role': 'user',
-      'content': 'What is in this image? Be concise.',
-      'images': ["test.jpg"],
-    }
-  ],
+    model="qwen2.5vl",
+    messages=[
+        {
+            "role": "user",
+            "content": "What is in this image? Be concise.",
+            "images": ["test.jpg"],
+        }
+    ],
 )
 
 print(response.message.content)

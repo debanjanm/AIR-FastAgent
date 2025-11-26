@@ -1,5 +1,9 @@
-#------------------------------------------------------------------------------##
+# ------------------------------------------------------------------------------##
+##------------------------------------------------------------------------------##
+## Set up environment variables for LM Studio
+import os
 import pickle
+
 # from langchain_community.retrievers import BM25Retriever # Import is still needed for loading
 
 # # Define the file path where the retriever is saved
@@ -18,22 +22,20 @@ import pickle
 # for doc in relevant_docs:
 #     print(doc.page_content)
 
-##------------------------------------------------------------------------------##
-## Set up environment variables for LM Studio
-import os
 os.environ["OPENAI_API_BASE"] = "http://localhost:1234/v1/"
 os.environ["OPENAI_API_KEY"] = "test"
+
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import PromptTemplate
 
 ##------------------------------------------------------------------------------##
 # Set up a LangChain pipeline with prompt template and LLM
 from langchain_openai import ChatOpenAI
-from langchain_core.prompts import PromptTemplate
-from langchain_core.output_parsers import StrOutputParser
 
 # choose model name exactly as LM Studio exposes it (check LM Studio UI)
-# llm = ChatOpenAI(model="qwen/qwen3-4b-thinking-2507", temperature=0.2)  
+# llm = ChatOpenAI(model="qwen/qwen3-4b-thinking-2507", temperature=0.2)
 
-llm = ChatOpenAI(model="qwen/qwen3-4b-2507", temperature=0)  
+llm = ChatOpenAI(model="qwen/qwen3-4b-2507", temperature=0)
 
 
 # template = "Answer the Question based on the context below.\n\nContext: {context}\n\nQ: {question}\nA:"
@@ -51,11 +53,12 @@ llm = ChatOpenAI(model="qwen/qwen3-4b-2507", temperature=0)
 # pip install -qU "langchain[anthropic]" to call the model
 
 from langchain.agents import create_agent
-from langgraph.checkpoint.memory import InMemorySaver 
+from langgraph.checkpoint.memory import InMemorySaver
 
 # def get_weather(city: str) -> str:
 #     """Get weather for a given city."""
 #     return f"It's always sunny in {city}!"
+
 
 def retrieve_context(query: str) -> str:
     """Retrieve context for a given query using the loaded BM25Retriever."""
@@ -68,6 +71,7 @@ def retrieve_context(query: str) -> str:
     docs = loaded_bm25_retriever.invoke(query)
     return "\n".join(doc.page_content for doc in docs)
 
+
 agent = create_agent(
     model=llm,
     tools=[retrieve_context],
@@ -77,17 +81,20 @@ agent = create_agent(
 
 # Run the agent
 sl = agent.invoke(
-    {"messages": [{"role": "user", "content": "Explain PopularityAdjusted Block Model (PABM)"}]},
+    {
+        "messages": [
+            {"role": "user", "content": "Explain PopularityAdjusted Block Model (PABM)"}
+        ]
+    },
     {"configurable": {"thread_id": "1"}},
 )
 
 print("Agent Response:{}".format(sl))
 
-response = sl.get('messages')[1]
+response = sl.get("messages")[1]
 
 print("------------------------------")
 print("Agent Response:{}".format(response.content))
 
 
 ##------------------------------------------------------------------------------##
-

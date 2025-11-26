@@ -8,6 +8,7 @@ markdown_text = result.document.export_to_markdown()
 
 print(markdown_text)
 
+
 def save_markdown(content, filename="output.md"):
     """
     Save text content to a Markdown (.md) file.
